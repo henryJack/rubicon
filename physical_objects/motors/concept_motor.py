@@ -58,7 +58,6 @@ class ConceptStator:
         """
 
     def __init__(self, name: str, stack_length: float = 0.1, inner_diameter: float = 0.1, outer_diameter: float = 0.2):
-        super().__init__(name)
         self.stack_length = stack_length
         self.inner_diameter = inner_diameter
         self.outer_diameter = outer_diameter
