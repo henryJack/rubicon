@@ -13,6 +13,8 @@ class MotorSizingTool:
     :param float max_torque: Calculated from torque speed curve
     :param float base_speed: Calculated from torque speed curve - speed at which you reach maximum power
     """
+
+    """ In the following, the EV requirements results from Jack's tool can be imported as the main design requirements of the EV E-Motor"""
     def __init__(self,
                  electrical_motor_assembly: ConceptMotorAssembly,
                  average_shear_stress: float = 80.0,
@@ -32,6 +34,8 @@ class MotorSizingTool:
         self.stacking_limit_exceeded_flag = False
 
     def calc_rot_dimensions(self):
+        """ The rotor volume computation using the reported equation in the confluence page.
+        Note that, the dl.ratio is an inout in the main file at line 31 and it ranges from 0.5 to 2, as reported in the paper, attached on the confluence page or as Leon reported in his report"""
 
         volume = self.max_torque / self.average_shear_stress / 2.0 / 1000.0
         self.electrical_motor_assembly.rotor.outer_diameter = \
@@ -78,10 +82,15 @@ class MotorSizingTool:
         outer_diameter = inner_diameter / stator_split_ratio
         self.electrical_motor_assembly.stator.outer_diameter = outer_diameter
 
+        """ In the previous piece of code, for more details of the used Benchmark equation, or linear assumption, please follow the confluence page"""
+
     def calc_rotor_inner_diameter(self):
 
         '''some parameters must be assumed to be able to size the rotor inner dimensions
-        assumed maximum iron flux density of 1.8, and airgap length of 1mm Neo Magnets and 4 pole rotor.
+        assumed maximum iron flux density of 1.8, and airgap length of 1mm NdfeB Magnets and 4 pole rotor.
+        This function computes the permanent magnet thickness for surface mounted permanent magnet E-Machine, which is out of scope of our study/project
+
+        In my option, it is better to size the shaft instead of sizing this special SMPM E_machine geometry (TODO)
         '''
         maximum_iron_flux_density = 1.8
         mur = 1.05
