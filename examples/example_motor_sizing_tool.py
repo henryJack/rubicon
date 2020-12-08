@@ -1,5 +1,6 @@
 from sizing.motor_sizing_tool import MotorSizingTool
 from physical_objects.motors.concept_motor import ConceptMotorAssembly, ConceptRotor, ConceptStator
+import numpy
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
@@ -21,6 +22,9 @@ def get_concept_motor(dl_ratio) -> ConceptMotorAssembly:
 def size_syn_rel_machine():
     pass
 
+# def size_machine(dl_ratio, average_shear_stress, mrs, split_ratio):
+
+# IPM, x-motor, PMaSynrel, Induction
 
 def size_ipm_machine():
     """Get Motor Assembly"""
@@ -48,6 +52,7 @@ def size_ipm_machine():
 
     plot_motor(motor_assembly)
 
+ # TODO: Adding other three functions for PMaSynRel, IM E-machines, and X-motor. Regarding X-motor, FREMAT tool could be linked to this script.
 
 def plot_motor(sized_motor: ConceptMotorAssembly):
     rotor = sized_motor.rotor

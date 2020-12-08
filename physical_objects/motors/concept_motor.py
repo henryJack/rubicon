@@ -39,7 +39,14 @@ class ConceptRotor:
         self.stack_length = outer_diameter
         self.outer_diameter = outer_diameter / dl_ratio
 
+        """ (TODO) , please, correct the mistake found on the previous function, as the second line is not correct, and the thirs line as well. 
+        It should computes the stack length instead of the outer diameter. You can note that the outer diameter is one of the inputs to this function
+        """
+
     def set_rotor_mass_with_density(self, density=7650.0):
+
+        """ We can change the mass density of the E-machine core material here in that line """
+
         volume = self.get_rotor_volume()
         self.mass = volume * density
 
