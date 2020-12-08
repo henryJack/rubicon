@@ -52,6 +52,7 @@ def size_ipm_machine():
 
     plot_motor(motor_assembly)
 
+ # TODO: Adding other three functions for PMaSynRel, IM E-machines, and X-motor. Regarding X-motor, FREMAT tool could be linked to this script.
 
 def plot_motor(sized_motor: ConceptMotorAssembly):
     rotor = sized_motor.rotor
