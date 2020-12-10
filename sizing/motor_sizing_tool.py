@@ -84,29 +84,42 @@ class MotorSizingTool:
 
         """ In the previous piece of code, for more details of the used Benchmark equation, or linear assumption, please follow the confluence page"""
 
+    # def calc_rotor_inner_diameter(self):
+    #
+    #     '''some parameters must be assumed to be able to size the rotor inner dimensions
+    #     assumed maximum iron flux density of 1.8, and airgap length of 1mm NdfeB Magnets and 4 pole rotor.
+    #     This function computes the permanent magnet thickness for surface mounted permanent magnet E-Machine, which is out of scope of our study/project
+    #
+    #     In my opinion, it is better to size the shaft instead of sizing this special SMPM E_machine geometry (TODO)   Done !!!
+    #     '''
+    #     maximum_iron_flux_density = 1.8
+    #     mur = 1.05
+    #     airgap_diameter = 0.001
+    #     remanance_flux_density = 1.2
+    #     poles = 4
+    #
+    #     magnet_thickness=mur*airgap_diameter/(remanance_flux_density/self.airgap_flux_density-1)
+    #
+    #     back_iron_thickness = self.airgap_flux_density/maximum_iron_flux_density * \
+    #                           math.pi*self.electrical_motor_assembly.rotor.outer_diameter / (4*poles)
+    #
+    #     inner_diameter = self.electrical_motor_assembly.rotor.outer_diameter - \
+    #                      2*(magnet_thickness + back_iron_thickness)
+    #
+    #     self.electrical_motor_assembly.rotor.inner_diameter = inner_diameter
+
+
     def calc_rotor_inner_diameter(self):
 
-        '''some parameters must be assumed to be able to size the rotor inner dimensions
-        assumed maximum iron flux density of 1.8, and airgap length of 1mm NdfeB Magnets and 4 pole rotor.
-        This function computes the permanent magnet thickness for surface mounted permanent magnet E-Machine, which is out of scope of our study/project
+        ''' this function computes the shaft diameter '''
 
-        In my option, it is better to size the shaft instead of sizing this special SMPM E_machine geometry (TODO)
-        '''
-        maximum_iron_flux_density = 1.8
-        mur = 1.05
-        airgap_diameter = 0.001
-        remanance_flux_density = 1.2
-        poles = 4
+        Power =  self.base_speed * np.pi /30 * self.max_torque
+        print("power ", Power)
 
-        magnet_thickness=mur*airgap_diameter/(remanance_flux_density/self.airgap_flux_density-1)
-
-        back_iron_thickness = self.airgap_flux_density/maximum_iron_flux_density * \
-                              math.pi*self.electrical_motor_assembly.rotor.outer_diameter / (4*poles)
-
-        inner_diameter = self.electrical_motor_assembly.rotor.outer_diameter - \
-                         2*(magnet_thickness + back_iron_thickness)
+        inner_diameter = np.power((1330*Power/self.base_speed), 1.0 / 3.0)/1000
 
         self.electrical_motor_assembly.rotor.inner_diameter = inner_diameter
+
 
     def add_end_winding_length(self):
         self.electrical_motor_assembly.stator.end_winding_length = 0.03
