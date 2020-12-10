@@ -36,11 +36,11 @@ class ConceptRotor:
 
     def set_dl_ratio_diameter(self, dl_ratio: float, outer_diameter: float):
         self.dl_ratio = dl_ratio
-        self.stack_length = outer_diameter
-        self.outer_diameter = outer_diameter / dl_ratio
+        self.outer_diameter = outer_diameter
+        self.stack_length = outer_diameter / dl_ratio
 
         """ (TODO) , please, correct the mistake found on the previous function, as the second line is not correct, and the thirs line as well. 
-        It should computes the stack length instead of the outer diameter. You can note that the outer diameter is one of the inputs to this function
+        It should computes the stack length instead of the outer diameter. You can note that the outer diameter is one of the inputs to this function     DOne!!!
         """
 
     def set_rotor_mass_with_density(self, density=7650.0):
