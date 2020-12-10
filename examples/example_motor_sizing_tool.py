@@ -26,7 +26,7 @@ def size_syn_rel_machine():
 
 # IPM, x-motor, PMaSynrel, Induction
 
-def size_ipm_machine():
+def size_radial_machine():
     """Get Motor Assembly"""
     dl_ratio = 0.5  # typical dl_ratios = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
     motor_assembly = get_concept_motor(dl_ratio=dl_ratio)
@@ -38,6 +38,10 @@ def size_ipm_machine():
                                                    max_torque=200.0,
                                                    base_speed=3000.0,
                                                    airgap_flux_density=1.0)
+
+    """ Note: the shear stress can be changed according to the E-machine topology. Referring to IPM the shear stress is varied between 40 to 120 depends on the desired torque of the Machine, it can be estimated from the benchmark data directly.
+    In addition, the shear stress in varied in lower range for PMaSynRel machine, as 30 to 50. Besides, It varies from 70 to 110 for the induction machine. Please, review the confluence page for more details. Done !!! """
+
     sizing_tool.size_motor()
 
     """Print common attributes"""
@@ -52,7 +56,6 @@ def size_ipm_machine():
 
     plot_motor(motor_assembly)
 
- # TODO: Adding other three functions for PMaSynRel, IM E-machines, and X-motor. Regarding X-motor, FREMAT tool could be linked to this script.
 
 def plot_motor(sized_motor: ConceptMotorAssembly):
     rotor = sized_motor.rotor
@@ -66,7 +69,9 @@ def plot_motor(sized_motor: ConceptMotorAssembly):
     # print results
     print("rotor.inner_diameter ", rotor.inner_diameter)
     print("rotor.outer_diameter ", rotor.outer_diameter)
+    print("stator.outer_diameter ", stator.inner_diameter)
     print("stator.outer_diameter ", stator.outer_diameter)
+
 
     # plot motor 2D
     circle1 = plt.Circle((0, 0), rotor.inner_diameter, color='w')
@@ -101,4 +106,4 @@ def plot_motor(sized_motor: ConceptMotorAssembly):
     plt.show()
 
 
-size_ipm_machine()
+size_radial_machine()
