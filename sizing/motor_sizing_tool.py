@@ -114,7 +114,7 @@ class MotorSizingTool:
         ''' this function computes the shaft diameter '''
 
         Power =  self.base_speed * np.pi /30 * self.max_torque
-        print("power ", Power)
+        print("power ", Power/1000)
 
         inner_diameter = np.power((1330*Power/self.base_speed), 1.0 / 3.0)/1000
 
