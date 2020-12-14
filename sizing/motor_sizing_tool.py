@@ -124,6 +124,56 @@ class MotorSizingTool:
     def add_end_winding_length(self):
         self.electrical_motor_assembly.stator.end_winding_length = 0.03
 
+
+    def material_size_wieght_cal(self):
+
+        PM_case = 1
+        mass_density_copper = 8933
+        mass_density_M235_25A = 7650
+        mass_density_Mild_steel = 7800
+        mass_density_N42UH = 7500
+
+        # stator side
+
+        Dso = self.electrical_motor_assembly.stator.outer_diameter
+        Dsi = self.electrical_motor_assembly.stator.inner_diameter
+        Dro = Dsi
+        Dri = self.electrical_motor_assembly.rotor.inner_diameter
+        Lstk =self.electrical_motor_assembly.rotor.stack_length
+        d = 0.88
+        """ from the benchmark data and MotorCAD EV examples, d is ranging from 0.86 to .9, where d = 0.86 for IM, d = 0.88 for IPM and d = 0.9 for PMaSynRel E-machines"""
+        stator_cylinder_vol = np.pi/4 * (Dso**2 - Dsi**2) * Lstk
+        stator_yoke_vol = np.pi/4 * (Dso**2 - (d*Dso)**2) * Lstk
+        stator_teeth_slots_vol = stator_cylinder_vol - stator_yoke_vol
+        stator_teeth_vol = stator_teeth_slots_vol * 0.5
+        stator_slots_vol = stator_teeth_vol
+        stator_core_lamination_vol = stator_teeth_vol + stator_yoke_vol
+        copper_winding_vol = stator_slots_vol * (1 + (1/Lstk) * (Lstk + 0.03*2))
+
+        stator_core_weight = stator_core_lamination_vol * mass_density_M235_25A
+        stator_copper_weight = copper_winding_vol * mass_density_copper
+
+        # rotor side
+
+        rotor_cylinder_vol = np.pi/4 * (Dsi**2 - Dri**2) * Lstk
+        PM_vol = 0.2 * rotor_cylinder_vol
+        Cage_vol = 0.5 * rotor_cylinder_vol
+        shaft_vol = np.pi/4 * (Dri**2) * (Lstk*2)     # please refer to Benchmark data or MotorCAD templates for EV motors
+        shaft_weight = shaft_vol * mass_density_Mild_steel
+        """For these figures, please refer to MotorCAD Templates for EV applications"""
+        if PM_case == 1:
+            rotor_lamination_vol = rotor_cylinder_vol - PM_vol
+            rotor_core_weight = rotor_lamination_vol * mass_density_M235_25A
+            PM_weight = PM_vol * mass_density_N42UH
+            E_machine_active_component_weight = shaft_weight + rotor_core_weight + PM_weight + stator_core_weight + stator_copper_weight
+
+        else:
+            rotor_lamination_vol = rotor_cylinder_vol - Cage_vol
+            rotor_core_weight = rotor_lamination_vol * mass_density_M235_25A
+            Cage_weight = Cage_vol * mass_density_copper
+            E_machine_active_component_weight = shaft_weight + rotor_core_weight + Cage_weight + stator_core_weight + stator_copper_weight
+
+
     def size_motor(self):
         # size rotor
         MotorSizingTool.calc_rot_dimensions(self)
