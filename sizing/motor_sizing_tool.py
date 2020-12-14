@@ -114,7 +114,7 @@ class MotorSizingTool:
         ''' this function computes the shaft diameter '''
 
         Power =  self.base_speed * np.pi /30 * self.max_torque
-        print("power ", Power/1000)
+        print("{}{}{}".format("power = ", Power/1000, " kw"))
 
         inner_diameter = np.power((1330*Power/self.base_speed), 1.0 / 3.0)/1000
 
@@ -132,6 +132,8 @@ class MotorSizingTool:
         mass_density_M235_25A = 7650
         mass_density_Mild_steel = 7800
         mass_density_N42UH = 7500
+        mass_density_Aluminum_alloy= 2790
+        kfill = 0.4
 
         # stator side
 
@@ -148,7 +150,7 @@ class MotorSizingTool:
         stator_teeth_vol = stator_teeth_slots_vol * 0.5
         stator_slots_vol = stator_teeth_vol
         stator_core_lamination_vol = stator_teeth_vol + stator_yoke_vol
-        copper_winding_vol = stator_slots_vol * (1 + (1/Lstk) * (Lstk + 0.03*2))
+        copper_winding_vol = stator_slots_vol * (1/Lstk) * (Lstk + 0.03*2) * kfill
 
         stator_core_weight = stator_core_lamination_vol * mass_density_M235_25A
         stator_copper_weight = copper_winding_vol * mass_density_copper
@@ -173,6 +175,37 @@ class MotorSizingTool:
             Cage_weight = Cage_vol * mass_density_copper
             E_machine_active_component_weight = shaft_weight + rotor_core_weight + Cage_weight + stator_core_weight + stator_copper_weight
 
+        # Housing
+
+        D_housing = Dso + 0.035      # this value has been achieved from Benchmark data and from MotorCAD templates for EV motors
+        L_housing = Lstk * 2 - 0.01*2  # 10 mm has been assumed for front and end plate of the motor housing
+        Housing_vol = np.pi/4 * (D_housing**2 - Dso**2) * L_housing
+        Housing_weight = Housing_vol * mass_density_Aluminum_alloy
+
+        # End caps
+
+        end_cap_thickness = 5 / 1000
+        Front_end_cap_volume = np.pi/4 * (D_housing**2 - Dri**2) * end_cap_thickness
+        Front_end_cap_weight = Front_end_cap_volume * mass_density_Aluminum_alloy
+        rear_end_cap_weight = Front_end_cap_weight
+        total_end_caps_weight = Front_end_cap_weight + rear_end_cap_weight
+
+        """ note: the bearing, wire insulation, slot liner, and winding impregnation have been ignored in these calculations"""
+
+        total_motor_weight = E_machine_active_component_weight + Housing_weight + total_end_caps_weight
+
+        print("{}{}{}".format("stator_core_weight = ", stator_core_weight, " kg"))
+        print("{}{}{}".format("stator_copper_weight = ", stator_copper_weight, " kg"))
+        if PM_case == 1:
+            print("{}{}{}".format("PM_weight = ", PM_weight, " kg"))
+        else:
+            print("{}{}{}".format("PM_weight = ", Cage_weight, " kg"))
+        print("{}{}{}".format("rotor_core_weight = ", rotor_core_weight, " kg"))
+        print("{}{}{}".format("E_machine_active_component_weight = ", E_machine_active_component_weight, " kg"))
+        print("{}{}{}".format("Housing_weight = ", Housing_weight, " kg"))
+        print("{}{}{}".format("total_end_caps_weight = ", total_end_caps_weight, " kg"))
+        print("{}{}{}".format("total_motor_weight = ", total_motor_weight," kg"))
+
 
     def size_motor(self):
         # size rotor
@@ -182,3 +215,5 @@ class MotorSizingTool:
         # size stator
         MotorSizingTool.calc_split_ratio_from_curve(self)
         MotorSizingTool.calc_rotor_inner_diameter(self)
+        # weight calculation
+        MotorSizingTool.material_size_wieght_cal(self)
