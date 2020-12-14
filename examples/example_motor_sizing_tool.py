@@ -1,6 +1,5 @@
 from sizing.motor_sizing_tool import MotorSizingTool
 from physical_objects.motors.concept_motor import ConceptMotorAssembly, ConceptRotor, ConceptStator
-import numpy
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
@@ -51,9 +50,6 @@ def size_radial_machine():
     rotor_volume = rotor.get_rotor_volume()
     stator_volume = stator.calc_stator_volume()
 
-    print("rotor_volume ", rotor_volume)
-    print("stator_volume ", stator_volume)
-
     plot_motor(motor_assembly)
 
 
@@ -67,11 +63,9 @@ def plot_motor(sized_motor: ConceptMotorAssembly):
     stator_volume = stator.calc_stator_volume()
 
     # print results
-    print("rotor.inner_diameter ", rotor.inner_diameter)
-    print("rotor.outer_diameter ", rotor.outer_diameter)
-    print("stator.outer_diameter ", stator.inner_diameter)
-    print("stator.outer_diameter ", stator.outer_diameter)
-
+    print("{}{}{}".format("rotor.inner_diameter = ", rotor.inner_diameter, " m"))
+    print("{}{}{}".format("rotor.outer_diameter = ", rotor.outer_diameter, " m"))
+    print("{}{}{}".format("stator.outer_diameter  = ", stator.outer_diameter, " m"))
 
     # plot motor 2D
     circle1 = plt.Circle((0, 0), rotor.inner_diameter, color='w')
