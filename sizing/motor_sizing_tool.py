@@ -84,7 +84,7 @@ class MotorSizingTool:
 
         """ In the previous piece of code, for more details of the used Benchmark equation, or linear assumption, please follow the confluence page"""
 
-    # def calc_rotor_inner_diameter(self):
+    # def calc_rotor_inner_diameter(self):  TODO!!! add here the calculation og the bush diameter
     #
     #     '''some parameters must be assumed to be able to size the rotor inner dimensions
     #     assumed maximum iron flux density of 1.8, and airgap length of 1mm NdfeB Magnets and 4 pole rotor.
@@ -109,7 +109,7 @@ class MotorSizingTool:
     #     self.electrical_motor_assembly.rotor.inner_diameter = inner_diameter
 
 
-    def calc_rotor_inner_diameter(self):
+    def calc_rotor_inner_diameter(self):    #  TODO  we need to change the name of this function to be rotor shaft diameter
 
         ''' this function computes the shaft diameter '''
 
@@ -125,7 +125,7 @@ class MotorSizingTool:
         self.electrical_motor_assembly.stator.end_winding_length = 0.03
 
 
-    def material_size_wieght_cal(self):
+    def material_size_wieght_cal(self): # TODO we need to add if statement inside this function to excute the part of the radial machines or x-motor part. Besides, I need to add the x-motor calculatoons to this function
 
         PM_case = 1
         mass_density_copper = 8933
