@@ -13,9 +13,9 @@ def get_concept_motor(dl_ratio) -> ConceptMotorAssembly:
     rotor.dl_ratio = dl_ratio
 
     """Add Rotor and Stator to Motor"""
-    ipm_motor_assembly: ConceptMotorAssembly = ConceptMotorAssembly(name='IPM', rotor=rotor, stator=stator)
+    initial_motor_assembly: ConceptMotorAssembly = ConceptMotorAssembly(name='IPM', rotor=rotor, stator=stator)
 
-    return ipm_motor_assembly
+    return initial_motor_assembly
 
 
 def size_syn_rel_machine():
