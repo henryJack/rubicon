@@ -27,19 +27,29 @@ def size_syn_rel_machine():
 
 def size_radial_machine():
     """Get Motor Assembly"""
-    dl_ratio = 0.5  # typical dl_ratios = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
+    dl_ratio = (1/1.23)
+    """ typical dl_ratios for radial flux E-machines = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]  and o.5 has been set based on Benchmark data 
+    # for X-motor is ~ (1/1.23 = 0.813), please, refer to the confluence page for more details."""
+
     motor_assembly = get_concept_motor(dl_ratio=dl_ratio)
 
     """Initialise Sizing Tool & Size """
     sizing_tool: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=motor_assembly,
-                                                   average_shear_stress=80.0,
+                                                   average_shear_stress=70.0,
                                                    maximum_rotor_speed=12000.0,
                                                    max_torque=200.0,
                                                    base_speed=3000.0,
-                                                   airgap_flux_density=1.0)
+                                                   airgap_flux_density=1.,
+                                                   PM_case=1,                         # not induction machine
+                                                   radial_case=0                  # if zer, this means we are designing x-motor
+                                                   )
 
-    """ Note: the shear stress can be changed according to the E-machine topology. Referring to IPM the shear stress is varied between 40 to 120 depends on the desired torque of the Machine, it can be estimated from the benchmark data directly.
-    In addition, the shear stress in varied in lower range for PMaSynRel machine, as 30 to 50. Besides, It varies from 70 to 110 for the induction machine. Please, review the confluence page for more details. Done !!! """
+    """ Note: the shear stress can be changed according to the E-machine topology. Referring to IPM the shear stress is varied
+    between 40 to 120 depends on the desired torque of the Machine, it can be estimated from the benchmark data directly.
+    In addition, the shear stress in varied in lower range for PMaSynRel machine, as 30 to 50. Besides, It varies 
+    from 70 to 110 for the induction machine. Please, review the confluence page for more details. Done !!! """
+
+    """ Referring to X-motor topology, the peak shear stress is ~ 70 kPa. Please, refer to the confluence page for more details """
 
     sizing_tool.size_motor()
 
@@ -62,10 +72,10 @@ def plot_motor(sized_motor: ConceptMotorAssembly):
     rotor_volume = rotor.get_rotor_volume()
     stator_volume = stator.calc_stator_volume()
 
-    # print results
-    print("{}{}{}".format("rotor.inner_diameter = ", rotor.inner_diameter, " m"))
-    print("{}{}{}".format("rotor.outer_diameter = ", rotor.outer_diameter, " m"))
-    print("{}{}{}".format("stator.outer_diameter  = ", stator.outer_diameter, " m"))
+    # # print results
+    # print("{}{}{}".format("rotor.inner_diameter = ", rotor.inner_diameter, " m"))
+    # print("{}{}{}".format("rotor.outer_diameter = ", rotor.outer_diameter, " m"))
+    # print("{}{}{}".format("stator.outer_diameter  = ", stator.outer_diameter, " m"))
 
     # plot motor 2D
     circle1 = plt.Circle((0, 0), rotor.inner_diameter, color='w')
@@ -95,7 +105,7 @@ def plot_motor(sized_motor: ConceptMotorAssembly):
     ax.add_patch(rectangle2)
     ax.add_patch(rectangle1)
 
-    plt.title('Shear stress = 80, DLratio = 0.5')
+    # plt.title('Shear stress = 80, DLratio = 0.5')
 
     plt.show()
 
