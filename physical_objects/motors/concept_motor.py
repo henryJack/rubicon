@@ -18,6 +18,7 @@ class ConceptRotor:
                  stack_length: float = 0.1,
                  inner_diameter: float = 0.03,
                  outer_diameter: float = 0.1,
+                 shaft_diameter: float = 0.025,     # has been added to highlight the difference between the inner rotor diameter and the shaft diameter. This is useful for the X-motor rotor parameters definition.
                  mass: float = None):
         self.name = name
         self.stack_length = stack_length
@@ -25,6 +26,7 @@ class ConceptRotor:
         self.outer_diameter = outer_diameter
         self.mass = mass
         self.dl_ratio = self.outer_diameter / self.stack_length
+        self.shaft_diameter = shaft_diameter
 
     def get_rotor_volume(self):
         return (self.outer_diameter ** 2 - self.inner_diameter ** 2) * self.stack_length * math.pi / 4
