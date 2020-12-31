@@ -21,7 +21,11 @@ class MotorSizingTool:
                  maximum_rotor_speed: float = 12000.0,
                  max_torque: float = 200.0,
                  base_speed: float = 3000.0,
-                 airgap_flux_density=1.0):
+                 airgap_flux_density=1.0,
+                 PM_case=1,
+                 radial_case=1,
+                 ):
+
 
         self.electrical_motor_assembly = electrical_motor_assembly
         self.average_shear_stress = average_shear_stress
@@ -32,10 +36,16 @@ class MotorSizingTool:
         self.tip_speed_error_flag = False
         self.shear_stress_out_of_range = False
         self.stacking_limit_exceeded_flag = False
+        self.radial_case = radial_case
+        self.PM_case = PM_case
+
+
 
     def calc_rot_dimensions(self):
         """ The rotor volume computation using the reported equation in the confluence page.
-        Note that, the dl.ratio is an inout in the main file at line 31 and it ranges from 0.5 to 2, as reported in the paper, attached on the confluence page or as Leon reported in his report"""
+        Note that, the dl.ratio is an inout in the main file at line 31 and it ranges from 0.5 to 2,
+        as reported in the paper, attached on the confluence page or as Leon reported in his report
+        In addition, it can be set as (1/1.23 ~ 0.813) for X-motor, as a part of the aforementioned range """
 
         volume = self.max_torque / self.average_shear_stress / 2.0 / 1000.0
         self.electrical_motor_assembly.rotor.outer_diameter = \
@@ -43,6 +53,7 @@ class MotorSizingTool:
 
         self.electrical_motor_assembly.rotor.stack_length = \
             self.electrical_motor_assembly.rotor.outer_diameter / self.electrical_motor_assembly.rotor.dl_ratio
+
 
     def calc_tip_speed(self):
         ''' Calculates rotor tip speed, compares value to maximum for silicon iron and
@@ -84,41 +95,24 @@ class MotorSizingTool:
 
         """ In the previous piece of code, for more details of the used Benchmark equation, or linear assumption, please follow the confluence page"""
 
-    # def calc_rotor_inner_diameter(self):  TODO!!! add here the calculation og the bush diameter
-    #
-    #     '''some parameters must be assumed to be able to size the rotor inner dimensions
-    #     assumed maximum iron flux density of 1.8, and airgap length of 1mm NdfeB Magnets and 4 pole rotor.
-    #     This function computes the permanent magnet thickness for surface mounted permanent magnet E-Machine, which is out of scope of our study/project
-    #
-    #     In my opinion, it is better to size the shaft instead of sizing this special SMPM E_machine geometry (TODO)   Done !!!
-    #     '''
-    #     maximum_iron_flux_density = 1.8
-    #     mur = 1.05
-    #     airgap_diameter = 0.001
-    #     remanance_flux_density = 1.2
-    #     poles = 4
-    #
-    #     magnet_thickness=mur*airgap_diameter/(remanance_flux_density/self.airgap_flux_density-1)
-    #
-    #     back_iron_thickness = self.airgap_flux_density/maximum_iron_flux_density * \
-    #                           math.pi*self.electrical_motor_assembly.rotor.outer_diameter / (4*poles)
-    #
-    #     inner_diameter = self.electrical_motor_assembly.rotor.outer_diameter - \
-    #                      2*(magnet_thickness + back_iron_thickness)
-    #
-    #     self.electrical_motor_assembly.rotor.inner_diameter = inner_diameter
 
+    def calc_rotor_inner_diameter(self):
 
-    def calc_rotor_inner_diameter(self):    #  TODO  we need to change the name of this function to be rotor shaft diameter
-
-        ''' this function computes the shaft diameter '''
+        """ This function for estimating the rotor inner diameter, which will not be the same as the shaft diameter in case of X-motor. Besides, this function computes the shaft diameter"""
 
         Power =  self.base_speed * np.pi /30 * self.max_torque
         print("{}{}{}".format("power = ", Power/1000, " kw"))
 
-        inner_diameter = np.power((1330*Power/self.base_speed), 1.0 / 3.0)/1000
+        shaft_diameter = np.power((1330*Power/self.base_speed), 1.0 / 3.0)/1000
 
-        self.electrical_motor_assembly.rotor.inner_diameter = inner_diameter
+        self.electrical_motor_assembly.rotor.shaft_diameter = shaft_diameter
+
+        if self.radial_case == 1:
+            self.electrical_motor_assembly.rotor.inner_diameter = shaft_diameter
+        else:
+            self.electrical_motor_assembly.rotor.inner_diameter = self.electrical_motor_assembly.rotor.outer_diameter * 0.44
+            D_Bush_outer = self.electrical_motor_assembly.rotor.inner_diameter
+            D_Bush_inner = shaft_diameter
 
 
     def add_end_winding_length(self):
@@ -127,12 +121,14 @@ class MotorSizingTool:
 
     def material_size_wieght_cal(self): # TODO we need to add if statement inside this function to excute the part of the radial machines or x-motor part. Besides, I need to add the x-motor calculatoons to this function
 
-        PM_case = 1
         mass_density_copper = 8933
         mass_density_M235_25A = 7650
         mass_density_Mild_steel = 7800
         mass_density_N42UH = 7500
         mass_density_Aluminum_alloy= 2790
+        pole_piece_density = 7850   # got it from FREMAT tool
+        magnet_density =  5000
+        bolt_density = 7870
         kfill = 0.4
 
         # stator side
@@ -140,10 +136,34 @@ class MotorSizingTool:
         Dso = self.electrical_motor_assembly.stator.outer_diameter
         Dsi = self.electrical_motor_assembly.stator.inner_diameter
         Dro = Dsi
+        Dsh = self.electrical_motor_assembly.rotor.shaft_diameter
+        Lstk = self.electrical_motor_assembly.rotor.stack_length
         Dri = self.electrical_motor_assembly.rotor.inner_diameter
-        Lstk =self.electrical_motor_assembly.rotor.stack_length
-        d = 0.88
+        D_Bush_outer = Dri
+        D_Bush_inner = Dsh
+
+        d = 0.88    # ration between the slot end diameter to the outer stator diameter, please refer to more details in the following script lines.
+
+        print("{}{}{}".format("Dso = ", Dso, " m"))
+        print("{}{}{}".format("Dsi = ", Dsi, " m"))
+        print("{}{}{}".format("Dro = ", Dro, " m"))
+        if self.radial_case == 1:
+            print("{}{}{}".format("Dri = Dsh = ", Dri, " m"))
+        else:
+            D_B_o = D_Bush_outer
+            D_B_i = D_Bush_inner
+            alpha_p = 0.8 # the pole arc to pole pitch ratio. This value has been chosen based on the Paper published by Prof Kias In IEEE transaction on magnetics, please, refer to this paper for more details.
+            print("{}{}{}".format("Dri = ", Dri, " m"))
+            print("{}{}{}".format("Dsh = ", Dsh, " m"))
+            print("{}{}{}".format("D_B_o = Dri = ", D_B_o, " m"))
+            print("{}{}{}".format("D_B_i = Dsh = ", D_B_i, " m"))
+
+
+        print("{}{}{}".format("Lstk = ", Lstk, " m"))
+
         """ from the benchmark data and MotorCAD EV examples, d is ranging from 0.86 to .9, where d = 0.86 for IM, d = 0.88 for IPM and d = 0.9 for PMaSynRel E-machines"""
+        # stator side
+
         stator_cylinder_vol = np.pi/4 * (Dso**2 - Dsi**2) * Lstk
         stator_yoke_vol = np.pi/4 * (Dso**2 - (d*Dso)**2) * Lstk
         stator_teeth_slots_vol = stator_cylinder_vol - stator_yoke_vol
@@ -156,24 +176,47 @@ class MotorSizingTool:
         stator_copper_weight = copper_winding_vol * mass_density_copper
 
         # rotor side
+        rotor_cylinder_vol = np.pi / 4 * (Dsi ** 2 - Dri ** 2) * Lstk
 
-        rotor_cylinder_vol = np.pi/4 * (Dsi**2 - Dri**2) * Lstk
-        PM_vol = 0.2 * rotor_cylinder_vol
-        Cage_vol = 0.5 * rotor_cylinder_vol
-        shaft_vol = np.pi/4 * (Dri**2) * (Lstk*2)     # please refer to Benchmark data or MotorCAD templates for EV motors
-        shaft_weight = shaft_vol * mass_density_Mild_steel
-        """For these figures, please refer to MotorCAD Templates for EV applications"""
-        if PM_case == 1:
-            rotor_lamination_vol = rotor_cylinder_vol - PM_vol
-            rotor_core_weight = rotor_lamination_vol * mass_density_M235_25A
-            PM_weight = PM_vol * mass_density_N42UH
-            E_machine_active_component_weight = shaft_weight + rotor_core_weight + PM_weight + stator_core_weight + stator_copper_weight
+        if self.radial_case == 1:
+            PM_vol = 0.2 * rotor_cylinder_vol
+            Cage_vol = 0.5 * rotor_cylinder_vol
+            shaft_vol = np.pi / 4 * (Dri ** 2) * (Lstk * 2)  # please refer to Benchmark data or MotorCAD templates for EV
+            shaft_weight = shaft_vol * mass_density_Mild_steel
+            """For these figures, please refer to MotorCAD Templates for EV applications"""
+            if self.PM_case == 1:
+                rotor_lamination_vol = rotor_cylinder_vol - PM_vol
+                rotor_core_weight = rotor_lamination_vol * mass_density_M235_25A
+                PM_weight = PM_vol * mass_density_N42UH
+                E_machine_active_component_weight = shaft_weight + rotor_core_weight + PM_weight + stator_core_weight + stator_copper_weight
+
+            else:
+                rotor_lamination_vol = rotor_cylinder_vol - Cage_vol
+                rotor_core_weight = rotor_lamination_vol * mass_density_M235_25A
+                Cage_weight = Cage_vol * mass_density_copper
+                E_machine_active_component_weight = shaft_weight + rotor_core_weight + Cage_weight + stator_core_weight + stator_copper_weight
 
         else:
-            rotor_lamination_vol = rotor_cylinder_vol - Cage_vol
-            rotor_core_weight = rotor_lamination_vol * mass_density_M235_25A
-            Cage_weight = Cage_vol * mass_density_copper
-            E_machine_active_component_weight = shaft_weight + rotor_core_weight + Cage_weight + stator_core_weight + stator_copper_weight
+            LaPM = 0.012
+            L_end_ring = 0.005
+            Dbo = 0.012      # please refer to the Edison motor prototype data
+            pole_pieces_vol = rotor_cylinder_vol * alpha_p
+            circumferential_PM_vol = rotor_cylinder_vol * (1-alpha_p)
+            axial_PM_vol = rotor_cylinder_vol/Lstk * LaPM
+            Bush_vol = np.pi / 4 * (Dri ** 2 - Dsh ** 2) * Lstk
+            shaft_vol = np.pi / 4 * (Dsh ** 2) * (Lstk * 2)
+            Bolt_vol = np.pi / 4 * (Dbo ** 2) * (Lstk * 2)
+            end_ring_vol = rotor_cylinder_vol/Lstk * L_end_ring * 2
+
+            pole_pieces_weight = pole_pieces_vol * pole_piece_density
+            circumferential_PM_weight = magnet_density * circumferential_PM_vol
+            axial_PM_weight = axial_PM_vol * magnet_density
+            PM_weight = circumferential_PM_weight + axial_PM_weight
+            Bush_weight = Bush_vol * mass_density_Mild_steel
+            bolt_weight = Bolt_vol * bolt_density
+            end_ring_weight = end_ring_vol * pole_piece_density
+            shaft_weight = shaft_vol * mass_density_Mild_steel
+            E_machine_active_component_weight = shaft_weight + pole_pieces_weight + PM_weight + Bush_weight + bolt_weight + end_ring_weight + stator_core_weight + stator_copper_weight
 
         # Housing
 
@@ -196,11 +239,23 @@ class MotorSizingTool:
 
         print("{}{}{}".format("stator_core_weight = ", stator_core_weight, " kg"))
         print("{}{}{}".format("stator_copper_weight = ", stator_copper_weight, " kg"))
-        if PM_case == 1:
-            print("{}{}{}".format("PM_weight = ", PM_weight, " kg"))
+        if self.radial_case == 1:
+            if self.PM_case == 1:
+                print("{}{}{}".format("PM_weight = ", PM_weight, " kg"))
+                print("{}{}{}".format("rotor_core_weight = ", rotor_core_weight, " kg"))
+
+            else:
+                print("{}{}{}".format("Cage_weight = ", Cage_weight, " kg"))
+                print("{}{}{}".format("rotor_core_weight = ", rotor_core_weight, " kg"))
         else:
-            print("{}{}{}".format("PM_weight = ", Cage_weight, " kg"))
-        print("{}{}{}".format("rotor_core_weight = ", rotor_core_weight, " kg"))
+            print("{}{}{}".format("pole_pieces_weight = ", pole_pieces_weight, " kg"))
+            print("{}{}{}".format("circumferential_PM_weight = ", circumferential_PM_weight, " kg"))
+            print("{}{}{}".format("axial_PM_weight = ", axial_PM_weight, " kg"))
+            print("{}{}{}".format("PM_weight = ", PM_weight, " kg"))
+            print("{}{}{}".format("Bush_weight = ", Bush_weight, " kg"))
+            print("{}{}{}".format("bolt_weight = ", bolt_weight, " kg"))
+            print("{}{}{}".format("end_ring_weight = ", end_ring_weight, " kg"))
+
         print("{}{}{}".format("E_machine_active_component_weight = ", E_machine_active_component_weight, " kg"))
         print("{}{}{}".format("Housing_weight = ", Housing_weight, " kg"))
         print("{}{}{}".format("total_end_caps_weight = ", total_end_caps_weight, " kg"))
