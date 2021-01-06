@@ -93,3 +93,19 @@ class ConceptMotorAssembly:
         self.rotor: ConceptRotor = rotor
         self.stator: ConceptStator = stator
 
+class ElectricMachineBom:
+    """Bill of materials of electric machine (motor or generator)"""
+    def __init__(self, name, Electrical_steel: float, Other_steel: float, Aluminum: float, Copper: float,
+                 Insulation_materials: float, Insulation_resins: float, Paint: float, Plastics: float, NdFeB: float,
+                 Ferrite: float):
+    self.name = name
+    # self.Electrical_steel = Electrical_steel
+    # self.Other_steel = Other_steel
+    # self.Aluminum = Aluminum
+    # self.Copper = Copper
+    # self.Insulation_materials = Insulation_materials
+    # self.Insulation_resins = Insulation_resins
+    # self.Paint = Paint
+    # self.Plastics = Plastics
+    # self.NdFeB = NdFeB
+    # self.Ferrite = Ferrite
