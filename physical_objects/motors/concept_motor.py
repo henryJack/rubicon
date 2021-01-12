@@ -2,6 +2,16 @@ from typing import List
 import math
 
 
+# class MotorBom:
+#     def __init__(self, paint, plastic, insulation resin, insulation material, copper, aluminium, steel, laminated_steel):
+#         self.insulation = insulation
+#         self.copper = copper
+#
+
+
+# (1, 5, "hat", 4) # list
+# {"key1": 1, "key2": 4} # dictionary
+
 class ConceptRotor:
     """
         Section defining geometry of a electrical rotor object.
