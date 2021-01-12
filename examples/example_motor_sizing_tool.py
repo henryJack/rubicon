@@ -40,8 +40,8 @@ def size_radial_machine():
                                                    max_torque=200.0,
                                                    base_speed=3000.0,
                                                    airgap_flux_density=1.,
-                                                   PM_case=1,                         # not induction machine
-                                                   radial_case=0                  # if zer, this means we are designing x-motor
+                                                   PM_case=True,                     # not induction machine
+                                                   radial_case=True                  # if false, this means we are designing x-motor
                                                    )
 
     """ Note: the shear stress can be changed according to the E-machine topology. Referring to IPM the shear stress is varied
@@ -61,7 +61,6 @@ def size_radial_machine():
     stator_volume = stator.calc_stator_volume()
 
     plot_motor(motor_assembly)
-
 
 def plot_motor(sized_motor: ConceptMotorAssembly):
     rotor = sized_motor.rotor
