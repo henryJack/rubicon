@@ -35,13 +35,13 @@ def size_radial_machine():
 
     """Initialise Sizing Tool & Size """
     sizing_tool: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=motor_assembly,
-                                                   average_shear_stress=70.0,
+                                                   average_shear_stress=80.0,
                                                    maximum_rotor_speed=12000.0,
                                                    max_torque=200.0,
                                                    base_speed=3000.0,
                                                    airgap_flux_density=1.,
                                                    PM_case=True,                     # not induction machine
-                                                   radial_case=True                  # if false, this means we are designing x-motor
+                                                   radial_case=False                  # if false, this means we are designing x-motor
                                                    )
 
     """ Note: the shear stress can be changed according to the E-machine topology. Referring to IPM the shear stress is varied
