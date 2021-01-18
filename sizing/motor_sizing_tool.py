@@ -258,9 +258,9 @@ class MotorSizingTool:
             print(F"end_ring_weight = {end_ring_weight} kg")
 
         print(F"E_machine_active_component_weight = {E_machine_active_component_weight} kg")
-        print(F"Housing_weight = {E_machine_active_component_weight} kg")
-        print(F"total_end_caps_weight = {E_machine_active_component_weight} kg")
-        print(F"total_motor_weight = {E_machine_active_component_weight} kg")
+        print(F"Housing_weight = {Housing_weight} kg")
+        print(F"total_end_caps_weight = {total_end_caps_weight} kg")
+        print(F"total_motor_weight = {total_motor_weight} kg")
 
     def size_motor(self):
         # size rotor
