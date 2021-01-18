@@ -238,8 +238,24 @@ class MotorSizingTool:
 
         total_motor_weight = E_machine_active_component_weight + Housing_weight + total_end_caps_weight
 
+        # insulation, painting, and plastic materials
+
+        winding_insulation_weight = 3.3/100 * stator_copper_weight    # please, refer to the sizing confluence page benchmark data
+        impregnation_weight = 31.2/100 * stator_copper_weight         # please, refer to the sizing confluence page benchmark data
+        plastic_weight = 5/100 * stator_copper_weight                  # please, refer to the Environmental impact paper
+
+        paint_thickness = 0.5/1000
+        painting_material_mass_density = 1300    # please refer to https://vodoprovod.blogspot.com/2017/12/convert-kg-paint-to-liters-online.html
+        paint_weight = np.pi/4 * ((D_housing+2*paint_thickness)**2 - D_housing**2) * L_housing * painting_material_mass_density
+
+        total_motor_weight = total_motor_weight + winding_insulation_weight + impregnation_weight + plastic_weight + paint_weight
+
         print(F"stator_core_weight =  {stator_core_weight} kg")
         print(F"stator_copper_weight =  {stator_copper_weight} kg")
+        print(F"winding_insulation_weight =  {winding_insulation_weight} kg")
+        print(F"impregnation_weight =  {impregnation_weight} kg")
+        print(F"plastic_weight =  {plastic_weight} kg")
+        print(F"paint_weight =  {paint_weight} kg")
 
         if self.radial_case == True:
             if self.PM_case == True:
