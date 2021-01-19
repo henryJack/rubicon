@@ -103,3 +103,33 @@ class ConceptMotorAssembly:
         self.rotor: ConceptRotor = rotor
         self.stator: ConceptStator = stator
 
+
+class ElectricMachineBom:
+    """Bill of materials of electric machine (motor or generator)"""
+    def __init__(self, name, electrical_steel: float, other_steel: float, aluminum: float, copper: float, ndfeb: float,
+                 ferrite: float):
+        self.name = name
+        self.electrical_steel = electrical_steel
+        self.other_steel = other_steel
+        self.aluminum = aluminum
+        self.copper = copper
+        self.insulation_materials = copper * 1/100
+        self.insulation_resins = copper * 33/100
+        self.paint = aluminum * 2/100
+        self.plastics = copper * 5/100
+        self.ndfeb = ndfeb
+        self.ferrite = ferrite
+
+    def get_bom_as_array(self):
+        """Prepares a 1x10 array for LCA calculations"""
+
+        return [[self.electrical_steel],
+                [self.other_steel],
+                [self.aluminum],
+                [self.copper],
+                [self.insulation_materials],
+                [self.insulation_resins],
+                [self.paint],
+                [self.plastics],
+                [self.ndfeb],
+                [self.ferrite]]
