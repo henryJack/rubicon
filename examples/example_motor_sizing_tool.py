@@ -13,20 +13,12 @@ def get_concept_motor(dl_ratio) -> ConceptMotorAssembly:
     rotor.dl_ratio = dl_ratio
 
     """Add Rotor and Stator to Motor"""
-    initial_motor_assembly: ConceptMotorAssembly = ConceptMotorAssembly(name='IPM', rotor=rotor, stator=stator)
+    initial_motor_assembly: ConceptMotorAssembly = ConceptMotorAssembly(name='motor', rotor=rotor, stator=stator)
 
     return initial_motor_assembly
 
 
-def size_syn_rel_machine():
-    pass
-
-# def size_machine(dl_ratio, average_shear_stress, mrs, split_ratio):
-
-# IPM, x-motor, PMaSynrel, Induction
-
-
-def size_radial_machine():
+def size_electric_machine():
     """Get Motor Assembly"""
     dl_ratio = (1/1.23)
     """ typical dl_ratios for radial flux E-machines = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]  and o.5 has been set based on Benchmark data 
@@ -40,9 +32,7 @@ def size_radial_machine():
                                                    maximum_rotor_speed=12000.0,
                                                    max_torque=200.0,
                                                    base_speed=3000.0,
-                                                   airgap_flux_density=1.,
-                                                   PM_case=True,                     # not induction machine
-                                                   radial_case=True                  #Todo motor "type" if false, this means we are designing x-motor
+                                                   motor_type="IM"      # you can type x-motor, IPM, IM, PMaSynREL
                                                    )
 
     """ Note: the shear stress can be changed according to the E-machine topology. Referring to IPM the shear stress is varied
@@ -110,4 +100,4 @@ def plot_motor(sized_motor: ConceptMotorAssembly):
     plt.show()
 
 
-size_radial_machine()
+size_electric_machine()

@@ -21,10 +21,17 @@ class MotorSizingTool:
                  max_torque: float = 200.0,
                  base_speed: float = 3000.0,
                  airgap_flux_density=1.0,
-                 PM_case=True,
-                 radial_case=True,
+                 motor_type="x-motor"
                  ):
-
+        if motor_type == "x-motor":
+            self.PM_case = True
+            self.radial_case = False
+        elif motor_type == "IPM" or motor_type == "PMaSynREL":
+            self.PM_case = True
+            self.radial_case = True
+        elif motor_type == "IM":
+            self.PM_case = False
+            self.radial_case = True
 
         self.electrical_motor_assembly = electrical_motor_assembly
         self.average_shear_stress = average_shear_stress
@@ -35,22 +42,12 @@ class MotorSizingTool:
         self.tip_speed_error_flag = False
         self.shear_stress_out_of_range = False
         self.stacking_limit_exceeded_flag = False
-        self.radial_case = radial_case
-        self.PM_case = PM_case
-
         self.electrical_steel = 0
         self.other_steel = 0
         self.copper = 0
         self.aluminium = 0
         self.ndfeb = 0
         self. ferrite = 0
-
-    def get_electric_machine_bom(self):
-        #Hanafy!
-        emb = ElectricMachineBom("name", self.electrical_steel, self.other_steel, self.aluminium)
-        return emb
-
-
 
     def calc_rot_dimensions(self):
         """ The rotor volume computation using the reported equation in the confluence page.
@@ -112,6 +109,10 @@ class MotorSizingTool:
         """ This function for estimating the rotor inner diameter, which will not be the same as the shaft diameter in case of X-motor. Besides, this function computes the shaft diameter"""
 
         Power =  self.base_speed * np.pi /30 * self.max_torque
+        print(F"")
+        print(F"========================================================")
+        print(F"Motor Sizing tool outcomes itself")
+        print(F"========================================================")
         print(F"power = {Power/1000} kW")
         # print("{}{}{}".format("power = ", Power/1000, " kw"))
 
@@ -324,7 +325,6 @@ class MotorSizingTool:
         print(F"Print BOM Variable")
         print(F"========================================================")
         print(F"Electrical_steel = {Electrical_steel} kg")
-        self.electrical_steel = Electrical_steel
         print(F"Other_steel = {Other_steel} kg")
         print(F"Aluminum = {Aluminum} kg")
         print(F"Copper = {Copper} kg")
@@ -340,6 +340,12 @@ class MotorSizingTool:
         else:
             print(F"Ferrite = {Ferrite} kg")
 
+        self.electrical_steel = Electrical_steel
+        self.other_steel = Other_steel
+        self.aluminium = Aluminum
+        self.copper = Copper
+        self.ndfeb = NdFeB
+        self.ferrite = Ferrite
 
     def size_motor(self):
         # size rotor
@@ -352,7 +358,10 @@ class MotorSizingTool:
         # weight calculation
         MotorSizingTool.material_size_wieght_cal(self)
 
+    def get_electric_machine_bom(self):
+        emb = ElectricMachineBom("name", self.electrical_steel, self.other_steel, self.aluminium, self.copper,self.ndfeb,self.ferrite)
+        return emb
 
-# TODO we need to have a class to contain all the paramters that Radu needs to do his calculations. Please, ask Radu to give you a list of the Kg of the material that he needs to do his calculations.
 
-# insulation of the copper and resin
+
+

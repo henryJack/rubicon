@@ -85,8 +85,8 @@ def get_pei_matrix(em_bom_object: ElectricMachineBom):
     return em_pei
 
 
-check = get_pei_matrix(bom_object)
-
-print(check)
+# check = get_pei_matrix(bom_object)
+#
+# print(check)
 
 
