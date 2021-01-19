@@ -99,13 +99,13 @@ class ElectricMachineBom:
                  Insulation_materials: float, Insulation_resins: float, Paint: float, Plastics: float, NdFeB: float,
                  Ferrite: float):
     self.name = name
-    # self.Electrical_steel = Electrical_steel
-    # self.Other_steel = Other_steel
-    # self.Aluminum = Aluminum
-    # self.Copper = Copper
-    # self.Insulation_materials = Insulation_materials
-    # self.Insulation_resins = Insulation_resins
-    # self.Paint = Paint
-    # self.Plastics = Plastics
-    # self.NdFeB = NdFeB
-    # self.Ferrite = Ferrite
+    self.Electrical_steel = Electrical_steel
+    self.Other_steel = Other_steel
+    self.Aluminum = Aluminum
+    self.Copper = Copper
+    self.Insulation_materials = Copper * 1/100
+    self.Insulation_resins = Copper * 33/100
+    self.Paint = Aluminum * 2/100
+    self.Plastics = Copper * 5/100
+    self.NdFeB = NdFeB
+    self.Ferrite = Ferrite
