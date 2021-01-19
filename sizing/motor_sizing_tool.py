@@ -234,36 +234,55 @@ class MotorSizingTool:
         rear_end_cap_weight = Front_end_cap_weight
         total_end_caps_weight = Front_end_cap_weight + rear_end_cap_weight
 
+        Aluminum = total_end_caps_weight + Housing_weight
+
         """ note: the bearing, wire insulation, slot liner, and winding impregnation have been ignored in these calculations"""
 
         total_motor_weight = E_machine_active_component_weight + Housing_weight + total_end_caps_weight
 
         # insulation, painting, and plastic materials
 
-        winding_insulation_weight = 3.3/100 * stator_copper_weight    # please, refer to the sizing confluence page benchmark data
-        impregnation_weight = 31.2/100 * stator_copper_weight         # please, refer to the sizing confluence page benchmark data
-        plastic_weight = 5/100 * stator_copper_weight                  # please, refer to the Environmental impact paper
+        winding_insulation_weight = 1/100 * stator_copper_weight    # please, refer to the sizing confluence page benchmark data
+        Insulation_materials = winding_insulation_weight            # rename for BOM class
+        impregnation_weight = 31.2/100 * stator_copper_weight       # please, refer to the sizing confluence page benchmark data
+        Insulation_resins = impregnation_weight                     # rename for BOM class
+        plastic_weight = 5/100 * stator_copper_weight               # please, refer to the Environmental impact paper
+        Plastics = plastic_weight                                   # rename for BOM class
 
-        paint_thickness = 0.5/1000
-        painting_material_mass_density = 1300    # please refer to https://vodoprovod.blogspot.com/2017/12/convert-kg-paint-to-liters-online.html
-        paint_weight = np.pi/4 * ((D_housing+2*paint_thickness)**2 - D_housing**2) * L_housing * painting_material_mass_density
+        Housing_paint_thickness = 1/1000
+        end_caps_paint_thickness = 1/1000
 
-        total_motor_weight = total_motor_weight + winding_insulation_weight + impregnation_weight + plastic_weight + paint_weight
+        painting_material_mass_density = 1600    # please refer to https://vodoprovod.blogspot.com/2017/12/convert-kg-paint-to-liters-online.html
+        Housing_paint_weight = np.pi/4 * ((D_housing+2*Housing_paint_thickness)**2 - D_housing**2) * L_housing * painting_material_mass_density
+        End_cap_paint_weight = np.pi/4 * (D_housing**2 - Dri**2) * end_caps_paint_thickness * 2 * 2   # I multiply by 2 for both front and rear end caps and then multiply again by 2 for considering both inner and outer surface of the caps
+
+        total_paint_weight = Housing_paint_weight + End_cap_paint_weight
+        Paint = total_paint_weight                                  # rename for BOM class
+
+        total_motor_weight = total_motor_weight + winding_insulation_weight + impregnation_weight + plastic_weight + total_paint_weight
 
         print(F"stator_core_weight =  {stator_core_weight} kg")
         print(F"stator_copper_weight =  {stator_copper_weight} kg")
+        print(F"shaft_weight = {shaft_weight} kg")
         print(F"winding_insulation_weight =  {winding_insulation_weight} kg")
         print(F"impregnation_weight =  {impregnation_weight} kg")
         print(F"plastic_weight =  {plastic_weight} kg")
-        print(F"paint_weight =  {paint_weight} kg")
+        print(F"paint_weight =  {total_paint_weight} kg")
 
         if self.radial_case == True:
             if self.PM_case == True:
                 print(F"PM_weight = {PM_weight} kg")
                 print(F"rotor_core_weight = {rotor_core_weight} kg")
+                Electrical_steel = stator_core_weight + rotor_core_weight
+                Copper = stator_copper_weight
+                Other_steel = shaft_weight
+                NdFeB = PM_weight
             else:
                 print(F"Cage_weight = {Cage_weight} kg")
                 print(F"rotor_core_weight = {rotor_core_weight} kg")
+                Electrical_steel = stator_core_weight + rotor_core_weight
+                Copper = stator_copper_weight + Cage_weight
+                Other_steel = shaft_weight
         else:
             print(F"pole_pieces_weight = {pole_pieces_weight} kg")
             print(F"circumferential_PM_weight = {circumferential_PM_weight} kg")
@@ -272,11 +291,36 @@ class MotorSizingTool:
             print(F"Bush_weight = {Bush_weight} kg")
             print(F"bolt_weight = {bolt_weight} kg")
             print(F"end_ring_weight = {end_ring_weight} kg")
+            Electrical_steel = stator_core_weight + pole_pieces_weight + end_ring_weight
+            Copper = stator_copper_weight
+            Other_steel = shaft_weight + Bush_weight + bolt_weight
+            Ferrite = PM_weight
 
         print(F"E_machine_active_component_weight = {E_machine_active_component_weight} kg")
         print(F"Housing_weight = {Housing_weight} kg")
         print(F"total_end_caps_weight = {total_end_caps_weight} kg")
         print(F"total_motor_weight = {total_motor_weight} kg")
+
+        """ In the following, the required parameters for the BOM Class has been printed with the same names used in the BOM class as shared by Radu"""
+        print(F"")
+        print(F"========================================================")
+        print(F"Print BOM Variable")
+        print(F"========================================================")
+        print(F"Electrical_steel = {Electrical_steel} kg")
+        print(F"Other_steel = {Other_steel} kg")
+        print(F"Aluminum = {Aluminum} kg")
+        print(F"Copper = {Copper} kg")
+        print(F"Insulation_materials = {Insulation_materials} kg")
+        print(F"Insulation_resins = {Insulation_resins} kg")
+        print(F"Paint = {Paint} kg")
+        print(F"Plastics = {Plastics} kg")
+        if self.radial_case == True:
+            if self.PM_case == True:
+                print(F"NdFeB = {NdFeB} kg")
+            else:
+                pass
+        else:
+            print(F"Ferrite = {Ferrite} kg")
 
     def size_motor(self):
         # size rotor
