@@ -1,7 +1,6 @@
 import numpy as np
 import math
-from physical_objects.motors.concept_motor import ConceptMotorAssembly, ConceptRotor, ConceptStator
-
+from physical_objects.motors.concept_motor import ConceptMotorAssembly, ElectricMachineBom
 
 class MotorSizingTool:
     """
@@ -38,6 +37,18 @@ class MotorSizingTool:
         self.stacking_limit_exceeded_flag = False
         self.radial_case = radial_case
         self.PM_case = PM_case
+
+        self.electrical_steel = 0
+        self.other_steel = 0
+        self.copper = 0
+        self.aluminium = 0
+        self.ndfeb = 0
+        self. ferrite = 0
+
+    def get_electric_machine_bom(self):
+        #Hanafy!
+        emb = ElectricMachineBom("name", self.electrical_steel, self.other_steel, self.aluminium)
+        return emb
 
 
 
@@ -277,12 +288,16 @@ class MotorSizingTool:
                 Copper = stator_copper_weight
                 Other_steel = shaft_weight
                 NdFeB = PM_weight
+                Ferrite = 0
             else:
                 print(F"Cage_weight = {Cage_weight} kg")
                 print(F"rotor_core_weight = {rotor_core_weight} kg")
                 Electrical_steel = stator_core_weight + rotor_core_weight
                 Copper = stator_copper_weight + Cage_weight
                 Other_steel = shaft_weight
+                NdFeB =0
+                Ferrite = 0
+
         else:
             print(F"pole_pieces_weight = {pole_pieces_weight} kg")
             print(F"circumferential_PM_weight = {circumferential_PM_weight} kg")
@@ -295,6 +310,8 @@ class MotorSizingTool:
             Copper = stator_copper_weight
             Other_steel = shaft_weight + Bush_weight + bolt_weight
             Ferrite = PM_weight
+            NdFeB =0
+
 
         print(F"E_machine_active_component_weight = {E_machine_active_component_weight} kg")
         print(F"Housing_weight = {Housing_weight} kg")
@@ -307,6 +324,7 @@ class MotorSizingTool:
         print(F"Print BOM Variable")
         print(F"========================================================")
         print(F"Electrical_steel = {Electrical_steel} kg")
+        self.electrical_steel = Electrical_steel
         print(F"Other_steel = {Other_steel} kg")
         print(F"Aluminum = {Aluminum} kg")
         print(F"Copper = {Copper} kg")
@@ -321,6 +339,7 @@ class MotorSizingTool:
                 pass
         else:
             print(F"Ferrite = {Ferrite} kg")
+
 
     def size_motor(self):
         # size rotor
