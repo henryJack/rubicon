@@ -2,6 +2,7 @@ from physical_objects.motors.concept_motor import ConceptMotorAssembly, ConceptR
 from physical_objects.motors.concept_motor import ElectricMachineBom
 from sizing.motor_sizing_tool import MotorSizingTool
 from lca.EM_production_environmental_impact import get_pei_matrix
+import numpy as np
 
 def get_concept_motor(dl_ratio) -> ConceptMotorAssembly:
     """Create Rotor & Stator"""
@@ -25,17 +26,118 @@ IPM_motor_assembly = get_concept_motor(0.5)
 """ typical dl_ratios for radial flux E-machines = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]  and o.5 has been set based on Benchmark data 
 # for X-motor is ~ (1/1.23 = 0.813), please, refer to the confluence page for more details."""
 
+# Min power High torque case
 
+
+print(F"========================================================")
+print(F"Min power High torque case")
+print(F"========================================================")
+
+# x-motor
 mst: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=x_motor_assembly,   # you can type x_motor_assembly, PmaSynRel_motor_assembly ,IM_motor_assembly, or IPM_motor_assembly
-                                       average_shear_stress=80.0,                    # set the shear stress for your motor topology, please, read more details in the confluence page or in the motor_sizing_tool script
-                                       maximum_rotor_speed=12000.0,                  # motor maximum speed
-                                       max_torque=200.0,                             # motor maximum torque
-                                       base_speed=3000.0,                            # motor base speed
+                                       average_shear_stress=70.0,                    # set the shear stress for your motor topology, please, read more details in the confluence page or in the motor_sizing_tool script
+                                       maximum_rotor_speed=7235,                  # motor maximum speed
+                                       max_torque=59.4,                             # motor maximum torque
+                                       base_speed=1976,                            # motor base speed
                                        motor_type="x-motor"                          # you can type x-motor, IPM, IM, PMaSynREL
                                        )
 mst.size_motor()
-
 bom: ElectricMachineBom = mst.get_electric_machine_bom()
+print("PEI Array--> ", np.transpose(get_pei_matrix(bom)))
 
 
-get_pei_matrix(bom)
+
+# IPM motor
+mst: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=IPM_motor_assembly,   # you can type x_motor_assembly, PmaSynRel_motor_assembly ,IM_motor_assembly, or IPM_motor_assembly
+                                       average_shear_stress=80.0,                    # set the shear stress for your motor topology, please, read more details in the confluence page or in the motor_sizing_tool script
+                                       maximum_rotor_speed=7235,                  # motor maximum speed
+                                       max_torque=59.4,                             # motor maximum torque
+                                       base_speed=1976,                            # motor base speed
+                                       motor_type="IPM"                          # you can type x-motor, IPM, IM, PMaSynREL
+                                       )
+mst.size_motor()
+bom: ElectricMachineBom = mst.get_electric_machine_bom()
+print("PEI Array--> ", np.transpose(get_pei_matrix(bom)))
+
+
+# IM motor
+mst: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=IM_motor_assembly,   # you can type x_motor_assembly, PmaSynRel_motor_assembly ,IM_motor_assembly, or IPM_motor_assembly
+                                       average_shear_stress=70.0,                    # set the shear stress for your motor topology, please, read more details in the confluence page or in the motor_sizing_tool script
+                                       maximum_rotor_speed=7235,                  # motor maximum speed
+                                       max_torque=59.4,                             # motor maximum torque
+                                       base_speed=1976,                            # motor base speed
+                                       motor_type="IM"                          # you can type x-motor, IPM, IM, PMaSynREL
+                                       )
+mst.size_motor()
+bom: ElectricMachineBom = mst.get_electric_machine_bom()
+print("PEI Array--> ", np.transpose(get_pei_matrix(bom)))
+
+
+# PmaSynRel motor
+mst: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=PmaSynRel_motor_assembly,   # you can type x_motor_assembly, PmaSynRel_motor_assembly ,IM_motor_assembly, or IPM_motor_assembly
+                                       average_shear_stress=80,                    # set the shear stress for your motor topology, please, read more details in the confluence page or in the motor_sizing_tool script
+                                       maximum_rotor_speed=7235,                  # motor maximum speed
+                                       max_torque=59.4,                             # motor maximum torque
+                                       base_speed=1976,                            # motor base speed
+                                       motor_type="PMaSynREL"                          # you can type x-motor, IPM, IM, PMaSynREL
+                                       )
+mst.size_motor()
+bom: ElectricMachineBom = mst.get_electric_machine_bom()
+print("PEI Array--> ", np.transpose(get_pei_matrix(bom)))
+
+
+
+print(F"========================================================")
+print(F"# Min Torque High power case")
+print(F"========================================================")
+
+# Min Torque High power case
+
+# x-motor
+mst: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=x_motor_assembly,   # you can type x_motor_assembly, PmaSynRel_motor_assembly ,IM_motor_assembly, or IPM_motor_assembly
+                                       average_shear_stress=70.0,                    # set the shear stress for your motor topology, please, read more details in the confluence page or in the motor_sizing_tool script
+                                       maximum_rotor_speed=7235,                  # motor maximum speed
+                                       max_torque=46.4,                             # motor maximum torque
+                                       base_speed=3279,                            # motor base speed
+                                       motor_type="x-motor"                          # you can type x-motor, IPM, IM, PMaSynREL
+                                       )
+mst.size_motor()
+bom: ElectricMachineBom = mst.get_electric_machine_bom()
+print("PEI Array--> ", np.transpose(get_pei_matrix(bom)))
+
+
+# IPM motor
+mst: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=IPM_motor_assembly,   # you can type x_motor_assembly, PmaSynRel_motor_assembly ,IM_motor_assembly, or IPM_motor_assembly
+                                       average_shear_stress=80.0,                    # set the shear stress for your motor topology, please, read more details in the confluence page or in the motor_sizing_tool script
+                                       maximum_rotor_speed=7235,                  # motor maximum speed
+                                       max_torque=46.4,                             # motor maximum torque
+                                       base_speed=3279,                            # motor base speed
+                                       motor_type="IPM"                          # you can type x-motor, IPM, IM, PMaSynREL
+                                       )
+mst.size_motor()
+bom: ElectricMachineBom = mst.get_electric_machine_bom()
+print("PEI Array--> ", np.transpose(get_pei_matrix(bom)))
+
+# IM motor
+mst: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=IM_motor_assembly,   # you can type x_motor_assembly, PmaSynRel_motor_assembly ,IM_motor_assembly, or IPM_motor_assembly
+                                       average_shear_stress=70.0,                    # set the shear stress for your motor topology, please, read more details in the confluence page or in the motor_sizing_tool script
+                                       maximum_rotor_speed=7235,                  # motor maximum speed
+                                       max_torque=46.4,                             # motor maximum torque
+                                       base_speed=3279,                            # motor base speed
+                                       motor_type="IM"                          # you can type x-motor, IPM, IM, PMaSynREL
+                                       )
+mst.size_motor()
+bom: ElectricMachineBom = mst.get_electric_machine_bom()
+print("PEI Array--> ", np.transpose(get_pei_matrix(bom)))
+
+# PmaSynRel motor
+mst: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=PmaSynRel_motor_assembly,   # you can type x_motor_assembly, PmaSynRel_motor_assembly ,IM_motor_assembly, or IPM_motor_assembly
+                                       average_shear_stress=80,                    # set the shear stress for your motor topology, please, read more details in the confluence page or in the motor_sizing_tool script
+                                       maximum_rotor_speed=7235,                  # motor maximum speed
+                                       max_torque=46.4,                             # motor maximum torque
+                                       base_speed=3279,                            # motor base speed
+                                       motor_type="PMaSynREL"                          # you can type x-motor, IPM, IM, PMaSynREL
+                                       )
+mst.size_motor()
+bom: ElectricMachineBom = mst.get_electric_machine_bom()
+print("PEI Array--> ", np.transpose(get_pei_matrix(bom)))

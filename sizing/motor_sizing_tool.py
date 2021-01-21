@@ -23,13 +23,15 @@ class MotorSizingTool:
                  airgap_flux_density=1.0,
                  motor_type="x-motor"
                  ):
-        if motor_type == "x-motor":
+        self.motor_type = motor_type
+
+        if self.motor_type == "x-motor":
             self.PM_case = True
             self.radial_case = False
-        elif motor_type == "IPM" or motor_type == "PMaSynREL":
+        elif self.motor_type == "IPM" or motor_type == "PMaSynREL":
             self.PM_case = True
             self.radial_case = True
-        elif motor_type == "IM":
+        elif self.motor_type == "IM":
             self.PM_case = False
             self.radial_case = True
 
@@ -111,7 +113,7 @@ class MotorSizingTool:
         Power =  self.base_speed * np.pi /30 * self.max_torque
         print(F"")
         print(F"========================================================")
-        print(F"Motor Sizing tool outcomes itself")
+        print(F" {self.motor_type}")
         print(F"========================================================")
         print(F"power = {Power/1000} kW")
         # print("{}{}{}".format("power = ", Power/1000, " kw"))
@@ -173,6 +175,7 @@ class MotorSizingTool:
             print(F"D_B_i = Dsh =   {D_B_i} m")
 
         print(F"Lstk =  {Lstk} m")
+        print(F"Typically shear stress =  {self.average_shear_stress} Kpa")
 
         """ from the benchmark data and MotorCAD EV examples, d is ranging from 0.86 to .9, where d = 0.86 for IM, d = 0.88 for IPM and d = 0.9 for PMaSynRel E-machines"""
         # stator side
@@ -264,11 +267,11 @@ class MotorSizingTool:
         Housing_paint_thickness = 1/1000
         end_caps_paint_thickness = 1/1000
 
-        painting_material_mass_density = 1600    # please refer to https://vodoprovod.blogspot.com/2017/12/convert-kg-paint-to-liters-online.html
-        Housing_paint_weight = np.pi/4 * ((D_housing+2*Housing_paint_thickness)**2 - D_housing**2) * L_housing * painting_material_mass_density
-        End_cap_paint_weight = np.pi/4 * (D_housing**2 - Dri**2) * end_caps_paint_thickness * 2 * 2   # I multiply by 2 for both front and rear end caps and then multiply again by 2 for considering both inner and outer surface of the caps
+        # painting_material_mass_density = 1600    # please refer to https://vodoprovod.blogspot.com/2017/12/convert-kg-paint-to-liters-online.html
+        # Housing_paint_weight = np.pi/4 * ((D_housing+2*Housing_paint_thickness)**2 - D_housing**2) * L_housing * painting_material_mass_density
+        # End_cap_paint_weight = np.pi/4 * (D_housing**2 - Dri**2) * end_caps_paint_thickness * 2 * 2   # I multiply by 2 for both front and rear end caps and then multiply again by 2 for considering both inner and outer surface of the caps
 
-        total_paint_weight = Housing_paint_weight + End_cap_paint_weight
+        total_paint_weight = 2/100 * Aluminum
         Paint = total_paint_weight                                  # rename for BOM class
 
         total_motor_weight = total_motor_weight + winding_insulation_weight + impregnation_weight + plastic_weight + total_paint_weight
@@ -322,7 +325,7 @@ class MotorSizingTool:
         """ In the following, the required parameters for the BOM Class has been printed with the same names used in the BOM class as shared by Radu"""
         print(F"")
         print(F"========================================================")
-        print(F"Print BOM Variable")
+        print(F"Print BOM Variable= {self.motor_type}")
         print(F"========================================================")
         print(F"Electrical_steel = {Electrical_steel} kg")
         print(F"Other_steel = {Other_steel} kg")

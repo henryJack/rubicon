@@ -81,7 +81,7 @@ def get_pei_matrix(em_bom_object: ElectricMachineBom):
         print(em_pei_kg_row_header[i],(32-len(em_pei_kg_row_header[i]))*".", "{:.3e}".format(em_pei[i][0]),'.',
               em_pei_row_header_units[i])
 
-    print(em_bom)
+    # print(em_bom)
     return em_pei
 
 
