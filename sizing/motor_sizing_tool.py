@@ -276,6 +276,7 @@ class MotorSizingTool:
 
         total_motor_weight = total_motor_weight + winding_insulation_weight + impregnation_weight + plastic_weight + total_paint_weight
 
+        print(F"Housing_vol =  {Housing_vol} m3")
         print(F"stator_core_weight =  {stator_core_weight} kg")
         print(F"stator_copper_weight =  {stator_copper_weight} kg")
         print(F"shaft_weight = {shaft_weight} kg")
@@ -283,6 +284,7 @@ class MotorSizingTool:
         print(F"impregnation_weight =  {impregnation_weight} kg")
         print(F"plastic_weight =  {plastic_weight} kg")
         print(F"paint_weight =  {total_paint_weight} kg")
+
 
         if self.radial_case == True:
             if self.PM_case == True:
@@ -343,6 +345,8 @@ class MotorSizingTool:
         else:
             print(F"Ferrite = {Ferrite} kg")
 
+        BOM_array = [Electrical_steel, Other_steel, Aluminum, Copper, Insulation_materials, Insulation_resins, Paint, Plastics]
+        print(F"BOM_array = {BOM_array}")
         self.electrical_steel = Electrical_steel
         self.other_steel = Other_steel
         self.aluminium = Aluminum
