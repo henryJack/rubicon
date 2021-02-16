@@ -141,3 +141,34 @@ mst: MotorSizingTool = MotorSizingTool(electrical_motor_assembly=PmaSynRel_motor
 mst.size_motor()
 bom: ElectricMachineBom = mst.get_electric_machine_bom()
 print("PEI Array--> ", np.transpose(get_pei_matrix(bom)))
+
+""" PEI ~ production Environmental impact"""
+""" Investigating Edison project different machines compared together """
+
+# estimating the housing of the Edison motor prototype
+D_housing_x = 0.230
+L_housing_x = 0.425
+Dso_x = 0.180
+mass_density_Aluminum_alloy = 2790
+Housing_vol = np.pi/4 * (D_housing_x**2 - Dso_x**2) * L_housing_x
+Housing_weight = Housing_vol * mass_density_Aluminum_alloy
+
+
+# End caps
+
+DS_end_cap_thickness = 12 / 1000
+DS_end_cap_outer_dia = 340 / 1000
+DS_end_cap_inner_dia = 180 / 1000
+
+NDS_end_cap_thickness = 30 / 1000
+NDS_end_cap_outer_dia = 230 / 1000
+NDS_end_cap_inner_dia = 80 / 1000
+
+
+DS_end_cap_volume = np.pi/4 * (DS_end_cap_outer_dia**2 - DS_end_cap_inner_dia**2) * DS_end_cap_thickness
+NDS_end_cap_volume = np.pi/4 * (NDS_end_cap_outer_dia**2 - NDS_end_cap_inner_dia**2) * NDS_end_cap_thickness
+
+DS_end_cap_weight = DS_end_cap_volume * mass_density_Aluminum_alloy
+NDS_end_cap_weight = NDS_end_cap_volume * mass_density_Aluminum_alloy
+
+Aluminum_x = DS_end_cap_weight + NDS_end_cap_weight + Housing_weight
