@@ -172,3 +172,58 @@ DS_end_cap_weight = DS_end_cap_volume * mass_density_Aluminum_alloy
 NDS_end_cap_weight = NDS_end_cap_volume * mass_density_Aluminum_alloy
 
 Aluminum_x = DS_end_cap_weight + NDS_end_cap_weight + Housing_weight
+
+# emb = ElectricMachineBom("name", self.electrical_steel, self.other_steel, self.aluminium, self.copper, self.ndfeb, self.ferrite)
+
+BOM_JLR = ElectricMachineBom(name="JLR Machine",
+                                electrical_steel=19.392,
+                                other_steel=2.872,
+                                aluminum=Aluminum_x,
+                                copper=4.742,
+                                ndfeb=1.491,
+                                ferrite=0)
+
+print("PEI Array--> ", np.transpose(get_pei_matrix(BOM_JLR)))
+
+
+BOM_two_stacks_x_motor = ElectricMachineBom(name="two_stacks_x_motor_concept Machine",
+                                electrical_steel=17,
+                                other_steel=4.5,
+                                aluminum=Aluminum_x,
+                                copper=4.742,
+                                ndfeb=0,
+                                ferrite=4.8)
+
+print("PEI Array--> ", np.transpose(get_pei_matrix(BOM_two_stacks_x_motor)))
+
+
+BOM_three_stacks_x_motor = ElectricMachineBom(name="three_stacks_x_motor_concept Machine",
+                                electrical_steel=17.0531,
+                                other_steel=5.4418,
+                                aluminum=Aluminum_x,
+                                copper=3.4672,
+                                ndfeb=0,
+                                ferrite=5.3877)
+
+print("PEI Array--> ", np.transpose(get_pei_matrix(BOM_three_stacks_x_motor)))
+
+
+BOM_three_stacks_x_motor_prototype = ElectricMachineBom(name="three_stacks_x_motor_prototype Machine",
+                                electrical_steel=22.8552,
+                                other_steel=7.7465,
+                                aluminum=Aluminum_x,
+                                copper=5.7366,
+                                ndfeb=0,
+                                ferrite=5.2161)
+
+print("PEI Array--> ", np.transpose(get_pei_matrix(BOM_three_stacks_x_motor_prototype)))
+
+BOM_PMaSynRel = ElectricMachineBom(name="PMaSynRel Machine",
+                                electrical_steel=24.2196,
+                                other_steel=2.5488,
+                                aluminum=Aluminum_x,
+                                copper=4.9891,
+                                ndfeb=0,
+                                ferrite=3.9689)
+
+print("PEI Array--> ", np.transpose(get_pei_matrix(BOM_PMaSynRel)))
